@@ -9,7 +9,7 @@ description = "Local-first AI memory layer that gives LLMs persistent, structure
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
-authors = [{ name = "MemoryOS Team" }]
+authors = [{ name = "Byhunny", email = "tansusam91@gmail.com" }]
 keywords = ["ai", "memory", "llm", "mcp", "knowledge-graph"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -17,6 +17,11 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Byhunny/memoryos"
+Repository = "https://github.com/Byhunny/memoryos"
+Issues = "https://github.com/Byhunny/memoryos/issues"
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.0",
