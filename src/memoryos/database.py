@@ -8,9 +8,9 @@ from sqlalchemy import (
     Boolean,
     Column,
     DateTime,
+    Float,
     Integer,
     LargeBinary,
-    Real,
     Text,
     create_engine,
 )
@@ -47,8 +47,8 @@ class NodeRow(Base):
     type = Column(Text, nullable=False)  # tool, concept, person, project, etc.
     name = Column(Text, nullable=False)
     description = Column(Text)
-    importance_score = Column(Real, default=0.5)
-    decay_score = Column(Real, default=1.0)
+    importance_score = Column(Float, default=0.5)
+    decay_score = Column(Float, default=1.0)
     access_count = Column(Integer, default=0)
     embedding = Column(LargeBinary)
     source = Column(Text, default="extraction")
@@ -57,11 +57,11 @@ class NodeRow(Base):
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     @property
-    def metadata(self) -> dict:
+    def extra_data(self) -> dict:
         return json.loads(self.metadata_json or "{}")
 
-    @metadata.setter
-    def metadata(self, value: dict) -> None:
+    @extra_data.setter
+    def extra_data(self, value: dict) -> None:
         self.metadata_json = json.dumps(value)
 
 
@@ -74,8 +74,8 @@ class EdgeRow(Base):
     source_id = Column(Text, nullable=False)
     target_id = Column(Text, nullable=False)
     relation = Column(Text, nullable=False)  # USES, REPLACED_BY, DEPENDS_ON, etc.
-    weight = Column(Real, default=1.0)
-    confidence = Column(Real, default=1.0)
+    weight = Column(Float, default=1.0)
+    confidence = Column(Float, default=1.0)
     context = Column(Text)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
