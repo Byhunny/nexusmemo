@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 mcp = FastMCP(
     "nexusmemo",
-    description="AI memory layer — persistent, structured memory for LLMs",
 )
 
 # Lazy-initialized singleton
