@@ -1,4 +1,4 @@
-# MemoryOS
+# NexusMemory
 
 Local-first AI memory layer that gives LLMs persistent, structured memory.
 
@@ -6,7 +6,7 @@ Local-first AI memory layer that gives LLMs persistent, structured memory.
 
 ## Problem
 
-LLMs are stateless. They forget previous sessions, lose architectural context, repeat mistakes, and require repeated explanations. MemoryOS fixes this by building a persistent knowledge graph from your conversations.
+LLMs are stateless. They forget previous sessions, lose architectural context, repeat mistakes, and require repeated explanations. NexusMemory fixes this by building a persistent knowledge graph from your conversations.
 
 ## How It Works
 
@@ -14,7 +14,7 @@ LLMs are stateless. They forget previous sessions, lose architectural context, r
 conversation → entity extraction → relationship graph → retrieval → prompt injection
 ```
 
-When you tell MemoryOS something, it:
+When you tell NexusMemory something, it:
 1. **Extracts** entities, relationships, and decisions using LLM
 2. **Embeds** the text for semantic search
 3. **Builds** a knowledge graph with NetworkX
@@ -45,23 +45,23 @@ cp .env.example .env
 
 ```bash
 # Add a memory
-memoryos add "We replaced Airflow with Dagster because DAG maintenance became difficult"
+nexusmemory add "We replaced Airflow with Dagster because DAG maintenance became difficult"
 
 # Search memories
-memoryos search "What orchestration tool do we use?"
+nexusmemory search "What orchestration tool do we use?"
 
 # Check status
-memoryos status
+nexusmemory status
 
 # Get entity info
-memoryos entity "Dagster"
+nexusmemory entity "Dagster"
 ```
 
 ### Use via API
 
 ```bash
 # Start the server
-memoryos serve
+nexusmemory serve
 
 # Add memory
 curl -X POST http://localhost:8765/memory/add \
@@ -78,10 +78,10 @@ curl -X POST http://localhost:8765/memory/query \
 
 ```bash
 # Add as MCP server
-claude mcp add memoryos -- memoryos mcp
+claude mcp add nexusmemory -- nexusmemory mcp
 
 # Or if installed via pip in a specific path:
-claude mcp add memoryos -- /path/to/venv/bin/memoryos mcp
+claude mcp add nexusmemory -- /path/to/venv/bin/nexusmemory mcp
 ```
 
 Available MCP tools:
@@ -98,7 +98,7 @@ Available MCP tools:
 ┌──────────────┐
 │   Interfaces │  CLI / FastAPI / MCP Server
 ├──────────────┤
-│     Core     │  MemoryOS orchestration class
+│     Core     │  NexusMemory orchestration class
 ├──────────────┤
 │   Services   │  Extraction, Embedding, Graph, Importance
 ├──────────────┤
@@ -132,7 +132,7 @@ pip install -e ".[dev]"
 pytest
 
 # Run API server in dev mode
-memoryos serve
+nexusmemory serve
 ```
 
 ## License

@@ -47,10 +47,10 @@ dev = [
 ]
 
 [project.scripts]
-memoryos = "memoryos.cli:cli"
+nexusmemory = "nexusmemory.cli:cli"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/memoryos"]
+packages = ["src/nexusmemory"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

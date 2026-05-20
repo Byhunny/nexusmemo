@@ -1,12 +1,12 @@
-"""FastAPI application for HTTP access to MemoryOS."""
+"""FastAPI application for HTTP access to NexusMemory."""
 
 import logging
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from memoryos.core import MemoryOS
-from memoryos.schemas import (
+from nexusmemory.core import NexusMemory
+from nexusmemory.schemas import (
     AddMemoryRequest,
     AddMemoryResponse,
     QueryRequest,
@@ -17,7 +17,7 @@ from memoryos.schemas import (
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="MemoryOS",
+    title="NexusMemory",
     description="Local-first AI memory layer with persistent, structured memory",
     version="0.1.0",
 )
@@ -30,25 +30,25 @@ app.add_middleware(
 )
 
 # Lazy-initialized singleton
-_engine: MemoryOS | None = None
+_engine: NexusMemory | None = None
 
 
-def get_engine() -> MemoryOS:
+def get_engine() -> NexusMemory:
     global _engine
     if _engine is None:
-        _engine = MemoryOS()
+        _engine = NexusMemory()
     return _engine
 
 
 @app.on_event("startup")
 def startup():
     get_engine()
-    logger.info("MemoryOS API server started")
+    logger.info("NexusMemory API server started")
 
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "memoryos"}
+    return {"status": "ok", "service": "nexusmemory"}
 
 
 @app.post("/memory/add", response_model=AddMemoryResponse)

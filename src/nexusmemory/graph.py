@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 import networkx as nx
 
-from memoryos.database import Database, NodeRow, EdgeRow
+from nexusmemory.database import Database, NodeRow, EdgeRow
 
 logger = logging.getLogger(__name__)
 

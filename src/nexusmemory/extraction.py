@@ -5,8 +5,8 @@ import logging
 
 from openai import OpenAI
 
-from memoryos.config import Settings
-from memoryos.schemas import ExtractionResult
+from nexusmemory.config import Settings
+from nexusmemory.schemas import ExtractionResult
 
 logger = logging.getLogger(__name__)
 

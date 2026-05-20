@@ -4,23 +4,23 @@ import logging
 
 from mcp.server.fastmcp import FastMCP
 
-from memoryos.core import MemoryOS
+from nexusmemory.core import NexusMemory
 
 logger = logging.getLogger(__name__)
 
 mcp = FastMCP(
-    "memoryos",
+    "nexusmemory",
     description="AI memory layer — persistent, structured memory for LLMs",
 )
 
 # Lazy-initialized singleton
-_engine: MemoryOS | None = None
+_engine: NexusMemory | None = None
 
 
-def get_engine() -> MemoryOS:
+def get_engine() -> NexusMemory:
     global _engine
     if _engine is None:
-        _engine = MemoryOS()
+        _engine = NexusMemory()
     return _engine
 
 
@@ -187,7 +187,7 @@ def get_decisions(topic: str = "") -> str:
 
 @mcp.tool()
 def memory_status() -> str:
-    """Get MemoryOS status — total memories, entities, relations, and database size.
+    """Get NexusMemory status — total memories, entities, relations, and database size.
 
     Returns:
         System statistics.
@@ -195,7 +195,7 @@ def memory_status() -> str:
     engine = get_engine()
     status = engine.get_status()
     return (
-        f"MemoryOS Status:\n"
+        f"NexusMemory Status:\n"
         f"  Memories: {status.total_memories}\n"
         f"  Entities: {status.total_entities}\n"
         f"  Relations: {status.total_relations}\n"

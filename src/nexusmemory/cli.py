@@ -1,4 +1,4 @@
-"""CLI entry point for MemoryOS."""
+"""CLI entry point for NexusMemory."""
 
 import json
 import logging
@@ -6,13 +6,13 @@ import logging
 import click
 import uvicorn
 
-from memoryos.config import get_settings
+from nexusmemory.config import get_settings
 
 
 @click.group()
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose logging")
 def cli(verbose: bool):
-    """MemoryOS — persistent, structured memory for AI."""
+    """NexusMemory — persistent, structured memory for AI."""
     level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(
         level=level,
@@ -25,10 +25,10 @@ def cli(verbose: bool):
 @click.option("--host", default=None, help="Host to bind to")
 @click.option("--port", default=None, type=int, help="Port to bind to")
 def serve(host: str | None, port: int | None):
-    """Start the MemoryOS HTTP API server."""
+    """Start the NexusMemory HTTP API server."""
     settings = get_settings()
     uvicorn.run(
-        "memoryos.api:app",
+        "nexusmemory.api:app",
         host=host or settings.host,
         port=port or settings.port,
         reload=False,
@@ -38,7 +38,7 @@ def serve(host: str | None, port: int | None):
 @cli.command()
 def mcp():
     """Start the MCP server (stdio transport) for Claude Code / Cursor."""
-    from memoryos.mcp_server import run_server
+    from nexusmemory.mcp_server import run_server
 
     run_server()
 
@@ -48,9 +48,9 @@ def mcp():
 @click.option("--session", "-s", default=None, help="Session ID")
 def add(text: str, session: str | None):
     """Add a memory from the command line."""
-    from memoryos.core import MemoryOS
+    from nexusmemory.core import NexusMemory
 
-    engine = MemoryOS()
+    engine = NexusMemory()
     result = engine.add_memory(text=text, session_id=session)
     click.echo(f"✓ Memory stored: {result.memory_id}")
     click.echo(f"  Entities: {result.entities_found}")
@@ -65,9 +65,9 @@ def add(text: str, session: str | None):
 @click.option("--context", "-c", is_flag=True, help="Show compressed context instead of results")
 def search(query: str, limit: int, context: bool):
     """Search through stored memories."""
-    from memoryos.core import MemoryOS
+    from nexusmemory.core import NexusMemory
 
-    engine = MemoryOS()
+    engine = NexusMemory()
     result = engine.query(query=query, limit=limit)
 
     if context:
@@ -89,12 +89,12 @@ def search(query: str, limit: int, context: bool):
 
 @cli.command()
 def status():
-    """Show MemoryOS status."""
-    from memoryos.core import MemoryOS
+    """Show NexusMemory status."""
+    from nexusmemory.core import NexusMemory
 
-    engine = MemoryOS()
+    engine = NexusMemory()
     s = engine.get_status()
-    click.echo("MemoryOS Status")
+    click.echo("NexusMemory Status")
     click.echo(f"  Memories:  {s.total_memories}")
     click.echo(f"  Entities:  {s.total_entities}")
     click.echo(f"  Relations: {s.total_relations}")
@@ -107,9 +107,9 @@ def status():
 @click.argument("name")
 def entity(name: str):
     """Get information about a specific entity."""
-    from memoryos.core import MemoryOS
+    from nexusmemory.core import NexusMemory
 
-    engine = MemoryOS()
+    engine = NexusMemory()
     result = engine.get_entity(name)
     if not result:
         click.echo(f"Entity '{name}' not found.")

@@ -1,4 +1,4 @@
-"""MemoryOS core — main orchestration class."""
+"""NexusMemory core — main orchestration class."""
 
 from __future__ import annotations
 
@@ -6,14 +6,14 @@ import logging
 import uuid
 from datetime import datetime, timezone
 
-from memoryos.config import Settings, get_settings
-from memoryos.database import Database, DecisionRow, EdgeRow, MemoryRow, NodeRow
-from memoryos.embeddings import EmbeddingService
-from memoryos.extraction import ExtractionService
-from memoryos.graph import GraphManager
-from memoryos.importance import ImportanceService
-from memoryos.retrieval import RetrievalService
-from memoryos.schemas import (
+from nexusmemory.config import Settings, get_settings
+from nexusmemory.database import Database, DecisionRow, EdgeRow, MemoryRow, NodeRow
+from nexusmemory.embeddings import EmbeddingService
+from nexusmemory.extraction import ExtractionService
+from nexusmemory.graph import GraphManager
+from nexusmemory.importance import ImportanceService
+from nexusmemory.retrieval import RetrievalService
+from nexusmemory.schemas import (
     AddMemoryResponse,
     ExtractionResult,
     QueryResponse,
@@ -28,7 +28,7 @@ def _make_id() -> str:
     return uuid.uuid4().hex[:12]
 
 
-class MemoryOS:
+class NexusMemory:
     """Main entry point — ties all services together."""
 
     def __init__(self, settings: Settings | None = None) -> None:
@@ -44,7 +44,7 @@ class MemoryOS:
 
         # Load existing graph into memory
         self.graph.load_from_db(self.db)
-        logger.info("MemoryOS initialized — db: %s", self.settings.db_path)
+        logger.info("NexusMemory initialized — db: %s", self.settings.db_path)
 
     def add_memory(self, text: str, session_id: str | None = None) -> AddMemoryResponse:
         """Process and store a new memory.
