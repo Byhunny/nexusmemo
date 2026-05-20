@@ -1,0 +1,140 @@
+# MemoryOS
+
+Local-first AI memory layer that gives LLMs persistent, structured memory.
+
+> "We are building the memory operating system that turns AI from a temporary assistant into a long-term collaborator."
+
+## Problem
+
+LLMs are stateless. They forget previous sessions, lose architectural context, repeat mistakes, and require repeated explanations. MemoryOS fixes this by building a persistent knowledge graph from your conversations.
+
+## How It Works
+
+```
+conversation → entity extraction → relationship graph → retrieval → prompt injection
+```
+
+When you tell MemoryOS something, it:
+1. **Extracts** entities, relationships, and decisions using LLM
+2. **Embeds** the text for semantic search
+3. **Builds** a knowledge graph with NetworkX
+4. **Stores** everything in a local SQLite database
+
+When you query, it:
+1. **Searches** semantically similar memories
+2. **Expands** through the knowledge graph
+3. **Reranks** by importance and relevance
+4. **Compresses** into context ready for LLM injection
+
+## Quick Start
+
+### Install
+
+```bash
+pip install -e .
+```
+
+### Configure
+
+```bash
+cp .env.example .env
+# Edit .env and add your OpenAI API key
+```
+
+### Use via CLI
+
+```bash
+# Add a memory
+memoryos add "We replaced Airflow with Dagster because DAG maintenance became difficult"
+
+# Search memories
+memoryos search "What orchestration tool do we use?"
+
+# Check status
+memoryos status
+
+# Get entity info
+memoryos entity "Dagster"
+```
+
+### Use via API
+
+```bash
+# Start the server
+memoryos serve
+
+# Add memory
+curl -X POST http://localhost:8765/memory/add \
+  -H "Content-Type: application/json" \
+  -d '{"text": "We migrated from MongoDB to PostgreSQL for better ACID compliance"}'
+
+# Query
+curl -X POST http://localhost:8765/memory/query \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What database do we use?"}'
+```
+
+### Use with Claude Code (MCP)
+
+```bash
+# Add as MCP server
+claude mcp add memoryos -- memoryos mcp
+
+# Or if installed via pip in a specific path:
+claude mcp add memoryos -- /path/to/venv/bin/memoryos mcp
+```
+
+Available MCP tools:
+- `add_memory` — Store project context
+- `search_memory` — Query past memories
+- `get_project_context` — Get rich context about a topic
+- `find_related` — Explore knowledge graph relationships
+- `get_decisions` — Review past decisions
+- `memory_status` — Check system stats
+
+## Architecture
+
+```
+┌──────────────┐
+│   Interfaces │  CLI / FastAPI / MCP Server
+├──────────────┤
+│     Core     │  MemoryOS orchestration class
+├──────────────┤
+│   Services   │  Extraction, Embedding, Graph, Importance
+├──────────────┤
+│   Storage    │  SQLite + NetworkX (in-memory)
+└──────────────┘
+```
+
+## Tech Stack
+
+- **Python 3.11+** with FastAPI
+- **SQLite** for persistent storage
+- **NetworkX** for in-memory knowledge graph
+- **OpenAI API** for extraction and embeddings
+- **MCP SDK** for Claude Code integration
+
+## Database
+
+Four tables:
+- `memories` — Raw text with embeddings
+- `nodes` — Knowledge graph entities
+- `edges` — Relationships between entities
+- `decisions` — Project decisions with reasoning
+
+## Development
+
+```bash
+# Install with dev dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# Run API server in dev mode
+memoryos serve
+```
+
+## License
+
+MIT
