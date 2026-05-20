@@ -1,4 +1,4 @@
-"""NexusMemory configuration management."""
+"""NexusMemo configuration management."""
 
 from pathlib import Path
 from functools import lru_cache
@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # --- Data ---
-    data_dir: Path = Field(default_factory=lambda: Path.home() / ".nexusmemory")
+    data_dir: Path = Field(default_factory=lambda: Path.home() / ".nexusmemo")
 
     # --- LLM ---
     openai_api_key: str = ""
@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     port: int = 8765
 
     model_config = {
-        "env_prefix": "NEXUSMEMORY_",
+        "env_prefix": "NEXUSMEMO_",
         "env_file": ".env",
         "env_file_encoding": "utf-8",
         "extra": "ignore",

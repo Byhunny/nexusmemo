@@ -1,4 +1,4 @@
-# NexusMemory
+# NexusMemo
 
 Local-first AI memory layer that gives LLMs persistent, structured memory.
 
@@ -6,7 +6,7 @@ Local-first AI memory layer that gives LLMs persistent, structured memory.
 
 ## Problem
 
-LLMs are stateless. They forget previous sessions, lose architectural context, repeat mistakes, and require repeated explanations. NexusMemory fixes this by building a persistent knowledge graph from your conversations.
+LLMs are stateless. They forget previous sessions, lose architectural context, repeat mistakes, and require repeated explanations. NexusMemo fixes this by building a persistent knowledge graph from your conversations.
 
 ## How It Works
 
@@ -14,7 +14,7 @@ LLMs are stateless. They forget previous sessions, lose architectural context, r
 conversation → entity extraction → relationship graph → retrieval → prompt injection
 ```
 
-When you tell NexusMemory something, it:
+When you tell NexusMemo something, it:
 1. **Extracts** entities, relationships, and decisions using LLM
 2. **Embeds** the text for semantic search
 3. **Builds** a knowledge graph with NetworkX
@@ -45,23 +45,23 @@ cp .env.example .env
 
 ```bash
 # Add a memory
-nexusmemory add "We replaced Airflow with Dagster because DAG maintenance became difficult"
+nexusmemo add "We replaced Airflow with Dagster because DAG maintenance became difficult"
 
 # Search memories
-nexusmemory search "What orchestration tool do we use?"
+nexusmemo search "What orchestration tool do we use?"
 
 # Check status
-nexusmemory status
+nexusmemo status
 
 # Get entity info
-nexusmemory entity "Dagster"
+nexusmemo entity "Dagster"
 ```
 
 ### Use via API
 
 ```bash
 # Start the server
-nexusmemory serve
+nexusmemo serve
 
 # Add memory
 curl -X POST http://localhost:8765/memory/add \
@@ -78,10 +78,10 @@ curl -X POST http://localhost:8765/memory/query \
 
 ```bash
 # Add as MCP server
-claude mcp add nexusmemory -- nexusmemory mcp
+claude mcp add nexusmemo -- nexusmemo mcp
 
 # Or if installed via pip in a specific path:
-claude mcp add nexusmemory -- /path/to/venv/bin/nexusmemory mcp
+claude mcp add nexusmemo -- /path/to/venv/bin/nexusmemo mcp
 ```
 
 Available MCP tools:
@@ -98,7 +98,7 @@ Available MCP tools:
 ┌──────────────┐
 │   Interfaces │  CLI / FastAPI / MCP Server
 ├──────────────┤
-│     Core     │  NexusMemory orchestration class
+│     Core     │  NexusMemo orchestration class
 ├──────────────┤
 │   Services   │  Extraction, Embedding, Graph, Importance
 ├──────────────┤
@@ -132,7 +132,7 @@ pip install -e ".[dev]"
 pytest
 
 # Run API server in dev mode
-nexusmemory serve
+nexusmemo serve
 ```
 
 ## License

@@ -1,4 +1,4 @@
-"""Tests for NexusMemory core functionality."""
+"""Tests for NexusMemo core functionality."""
 
 import os
 import tempfile
@@ -8,12 +8,12 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
-from nexusmemory.config import Settings
-from nexusmemory.database import Base, Database, MemoryRow, NodeRow, EdgeRow, DecisionRow
-from nexusmemory.embeddings import EmbeddingService
-from nexusmemory.graph import GraphManager
-from nexusmemory.importance import ImportanceService
-from nexusmemory.schemas import ExtractionResult, Entity, Relation, Decision
+from nexusmemo.config import Settings
+from nexusmemo.database import Base, Database, MemoryRow, NodeRow, EdgeRow, DecisionRow
+from nexusmemo.embeddings import EmbeddingService
+from nexusmemo.graph import GraphManager
+from nexusmemo.importance import ImportanceService
+from nexusmemo.schemas import ExtractionResult, Entity, Relation, Decision
 
 
 # ─── Database Tests ──────────────────────────────────────────────

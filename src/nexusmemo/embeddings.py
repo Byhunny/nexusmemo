@@ -3,7 +3,7 @@
 import numpy as np
 from openai import OpenAI
 
-from nexusmemory.config import Settings
+from nexusmemo.config import Settings
 
 
 class EmbeddingService:

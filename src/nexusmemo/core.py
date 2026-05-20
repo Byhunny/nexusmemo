@@ -1,4 +1,4 @@
-"""NexusMemory core — main orchestration class."""
+"""NexusMemo core — main orchestration class."""
 
 from __future__ import annotations
 
@@ -6,14 +6,14 @@ import logging
 import uuid
 from datetime import datetime, timezone
 
-from nexusmemory.config import Settings, get_settings
-from nexusmemory.database import Database, DecisionRow, EdgeRow, MemoryRow, NodeRow
-from nexusmemory.embeddings import EmbeddingService
-from nexusmemory.extraction import ExtractionService
-from nexusmemory.graph import GraphManager
-from nexusmemory.importance import ImportanceService
-from nexusmemory.retrieval import RetrievalService
-from nexusmemory.schemas import (
+from nexusmemo.config import Settings, get_settings
+from nexusmemo.database import Database, DecisionRow, EdgeRow, MemoryRow, NodeRow
+from nexusmemo.embeddings import EmbeddingService
+from nexusmemo.extraction import ExtractionService
+from nexusmemo.graph import GraphManager
+from nexusmemo.importance import ImportanceService
+from nexusmemo.retrieval import RetrievalService
+from nexusmemo.schemas import (
     AddMemoryResponse,
     ExtractionResult,
     QueryResponse,
@@ -28,7 +28,7 @@ def _make_id() -> str:
     return uuid.uuid4().hex[:12]
 
 
-class NexusMemory:
+class NexusMemo:
     """Main entry point — ties all services together."""
 
     def __init__(self, settings: Settings | None = None) -> None:
@@ -44,7 +44,7 @@ class NexusMemory:
 
         # Load existing graph into memory
         self.graph.load_from_db(self.db)
-        logger.info("NexusMemory initialized — db: %s", self.settings.db_path)
+        logger.info("NexusMemo initialized — db: %s", self.settings.db_path)
 
     def add_memory(self, text: str, session_id: str | None = None) -> AddMemoryResponse:
         """Process and store a new memory.

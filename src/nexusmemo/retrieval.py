@@ -7,10 +7,10 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from nexusmemory.config import Settings
-from nexusmemory.database import Database, MemoryRow, NodeRow
-from nexusmemory.embeddings import EmbeddingService
-from nexusmemory.graph import GraphManager
+from nexusmemo.config import Settings
+from nexusmemo.database import Database, MemoryRow, NodeRow
+from nexusmemo.embeddings import EmbeddingService
+from nexusmemo.graph import GraphManager
 
 logger = logging.getLogger(__name__)
 
