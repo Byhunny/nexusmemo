@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "byhunny-memoryos"
+name = "nexusmemory"
 version = "0.1.0"
 description = "Local-first AI memory layer that gives LLMs persistent, structured memory"
 readme = "README.md"
