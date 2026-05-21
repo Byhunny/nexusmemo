@@ -93,13 +93,14 @@ class NexusMemo:
             for relation in relations:
                 self._create_edge(session, relation)
 
+            import json
             # 5. Store decisions
             for decision in decisions:
                 dec = DecisionRow(
                     id=_make_id(),
                     what=decision.what,
                     why=decision.why,
-                    alternatives_json=str(decision.alternatives),
+                    alternatives_json=json.dumps(decision.alternatives),
                     memory_id=memory_id,
                 )
                 session.add(dec)
