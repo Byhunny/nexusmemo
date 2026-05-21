@@ -95,7 +95,15 @@ class DecisionRow(Base):
 
     @property
     def alternatives(self) -> list[str]:
-        return json.loads(self.alternatives_json or "[]")
+        val = self.alternatives_json or "[]"
+        try:
+            return json.loads(val)
+        except json.JSONDecodeError:
+            try:
+                import ast
+                return ast.literal_eval(val)
+            except Exception:
+                return []
 
     @alternatives.setter
     def alternatives(self, value: list[str]) -> None:

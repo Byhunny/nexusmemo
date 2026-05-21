@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "nexusmemo"
-version = "0.2.3"
+version = "0.2.4"
 description = "Local-first AI memory layer that gives LLMs persistent, structured memory"
 readme = "README.md"
 license = "MIT"
