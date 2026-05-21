@@ -51,7 +51,14 @@ def add(text: str, session: str | None):
     from nexusmemo.core import NexusMemo
 
     engine = NexusMemo()
-    result = engine.add_memory(text=text, session_id=session)
+    result = engine.add_memory(
+        text=text, 
+        summary=text[:200],
+        entities=[], 
+        relations=[], 
+        decisions=[], 
+        session_id=session
+    )
     click.echo(f"✓ Memory stored: {result.memory_id}")
     click.echo(f"  Entities: {result.entities_found}")
     click.echo(f"  Relations: {result.relations_found}")

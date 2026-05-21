@@ -13,7 +13,7 @@ from nexusmemo.database import Base, Database, MemoryRow, NodeRow, EdgeRow, Deci
 from nexusmemo.embeddings import EmbeddingService
 from nexusmemo.graph import GraphManager
 from nexusmemo.importance import ImportanceService
-from nexusmemo.schemas import ExtractionResult, Entity, Relation, Decision
+from nexusmemo.schemas import Entity, Relation, Decision
 
 
 # ─── Database Tests ──────────────────────────────────────────────

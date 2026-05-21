@@ -15,7 +15,7 @@ conversation → entity extraction → relationship graph → retrieval → prom
 ```
 
 When you tell NexusMemo something, it:
-1. **Extracts** entities, relationships, and decisions using LLM
+1. **Extracts** entities, relationships, and decisions via Claude (Client-side)
 2. **Embeds** the text for semantic search
 3. **Builds** a knowledge graph with NetworkX
 4. **Stores** everything in a local SQLite database
@@ -38,7 +38,7 @@ pip install -e .
 
 ```bash
 cp .env.example .env
-# Edit .env and add your OpenAI API key
+# Optional configuration, but everything works locally by default
 ```
 
 ### Use via CLI
@@ -111,8 +111,8 @@ Available MCP tools:
 - **Python 3.11+** with FastAPI
 - **SQLite** for persistent storage
 - **NetworkX** for in-memory knowledge graph
-- **OpenAI API** for extraction and embeddings
-- **MCP SDK** for Claude Code integration
+- **FastEmbed (ONNX)** for local semantic search (Zero API Keys)
+- **MCP SDK** for native Claude Code integration
 
 ## Database
 

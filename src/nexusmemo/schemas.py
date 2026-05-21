@@ -33,16 +33,6 @@ class Decision(BaseModel):
     alternatives: list[str] = Field(default_factory=list)
 
 
-class ExtractionResult(BaseModel):
-    """Result of LLM-based extraction from text."""
-
-    entities: list[Entity] = Field(default_factory=list)
-    relations: list[Relation] = Field(default_factory=list)
-    decisions: list[Decision] = Field(default_factory=list)
-    summary: str = ""
-    importance: float = 0.5
-
-
 # ─── API Schemas ─────────────────────────────────────────────────
 
 

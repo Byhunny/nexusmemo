@@ -9,13 +9,11 @@ from datetime import datetime, timezone
 from nexusmemo.config import Settings, get_settings
 from nexusmemo.database import Database, DecisionRow, EdgeRow, MemoryRow, NodeRow
 from nexusmemo.embeddings import EmbeddingService
-from nexusmemo.extraction import ExtractionService
 from nexusmemo.graph import GraphManager
 from nexusmemo.importance import ImportanceService
 from nexusmemo.retrieval import RetrievalService
 from nexusmemo.schemas import (
     AddMemoryResponse,
-    ExtractionResult,
     QueryResponse,
     SearchResult,
     StatusResponse,
@@ -35,7 +33,6 @@ class NexusMemo:
         self.settings = settings or get_settings()
         self.db = Database(self.settings.db_path)
         self.embeddings = EmbeddingService(self.settings)
-        self.extraction = ExtractionService(self.settings)
         self.graph = GraphManager()
         self.importance = ImportanceService()
         self.retrieval = RetrievalService(
@@ -46,12 +43,24 @@ class NexusMemo:
         self.graph.load_from_db(self.db)
         logger.info("NexusMemo initialized — db: %s", self.settings.db_path)
 
-    def add_memory(self, text: str, session_id: str | None = None) -> AddMemoryResponse:
-        """Process and store a new memory.
+    def add_memory(
+        self, 
+        text: str, 
+        summary: str = "",
+        entities: list = None,
+        relations: list = None,
+        decisions: list = None,
+        session_id: str | None = None
+    ) -> AddMemoryResponse:
+        """Process and store a new memory using pre-extracted entities from the client.
 
-        Pipeline: text → embed → extract → store → update graph
+        Pipeline: text → embed → store → update graph
         """
         memory_id = _make_id()
+        entities = entities or []
+        relations = relations or []
+        decisions = decisions or []
+        summary = summary or text[:200]
 
         # 1. Generate embedding for the raw text
         try:
@@ -61,20 +70,13 @@ class NexusMemo:
             logger.warning("Embedding generation failed, storing without: %s", e)
             embedding_bytes = None
 
-        # 2. Extract entities, relations, decisions
-        try:
-            extraction = self.extraction.extract(text)
-        except Exception as e:
-            logger.warning("Extraction failed, storing raw only: %s", e)
-            extraction = ExtractionResult(summary=text[:200])
-
-        # 3. Store the memory
+        # 2. Store the memory
         token_count = self.importance.estimate_tokens(text)
         with self.db.session() as session:
             memory = MemoryRow(
                 id=memory_id,
                 raw_text=text,
-                summary=extraction.summary,
+                summary=summary,
                 embedding=embedding_bytes,
                 session_id=session_id,
                 processed=True,
@@ -82,16 +84,17 @@ class NexusMemo:
             )
             session.add(memory)
 
-            # 4. Store entities as nodes
-            for entity in extraction.entities:
-                node_id = self._find_or_create_node(session, entity, extraction.importance)
+            # 3. Store entities as nodes
+            # We assume a default importance of 0.7 for client-provided entities
+            for entity in entities:
+                node_id = self._find_or_create_node(session, entity, 0.7)
 
-            # 5. Store relations as edges
-            for relation in extraction.relations:
-                self._create_edge(session, relation, extraction)
+            # 4. Store relations as edges
+            for relation in relations:
+                self._create_edge(session, relation)
 
-            # 6. Store decisions
-            for decision in extraction.decisions:
+            # 5. Store decisions
+            for decision in decisions:
                 dec = DecisionRow(
                     id=_make_id(),
                     what=decision.what,
@@ -103,15 +106,15 @@ class NexusMemo:
 
             session.commit()
 
-        # 7. Update in-memory graph
+        # 6. Update in-memory graph
         self.graph.load_from_db(self.db)
 
         return AddMemoryResponse(
             memory_id=memory_id,
-            entities_found=len(extraction.entities),
-            relations_found=len(extraction.relations),
-            decisions_found=len(extraction.decisions),
-            summary=extraction.summary,
+            entities_found=len(entities),
+            relations_found=len(relations),
+            decisions_found=len(decisions),
+            summary=summary,
         )
 
     def query(self, query: str, limit: int = 5) -> QueryResponse:
@@ -244,7 +247,7 @@ class NexusMemo:
         session.add(node)
         return node_id
 
-    def _create_edge(self, session, relation, extraction: ExtractionResult) -> None:
+    def _create_edge(self, session, relation) -> None:
         """Create an edge between two nodes."""
         # Find source and target nodes
         source_node = (

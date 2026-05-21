@@ -1,47 +1,38 @@
 """Embedding generation and similarity search."""
 
 import numpy as np
-from openai import OpenAI
+from fastembed import TextEmbedding
 
 from nexusmemo.config import Settings
 
 
 class EmbeddingService:
-    """Generate and compare text embeddings."""
+    """Generate and compare text embeddings using local ONNX model."""
 
     def __init__(self, settings: Settings) -> None:
         self._settings = settings
-        self._client: OpenAI | None = None
+        self._model: TextEmbedding | None = None
 
     @property
-    def client(self) -> OpenAI:
-        if self._client is None:
-            self._client = OpenAI(api_key=self._settings.openai_api_key)
-        return self._client
+    def model(self) -> TextEmbedding:
+        if self._model is None:
+            # fastembed automatically downloads and caches the model on first use
+            self._model = TextEmbedding(model_name=self._settings.embedding_model)
+        return self._model
 
     def generate(self, text: str) -> np.ndarray:
         """Generate embedding vector for a text string."""
-        response = self.client.embeddings.create(
-            model=self._settings.embedding_model,
-            input=text,
-            dimensions=self._settings.embedding_dimensions,
-        )
-        return np.array(response.data[0].embedding, dtype=np.float32)
+        # embed() returns a generator of embeddings
+        embeddings = list(self.model.embed([text]))
+        return np.array(embeddings[0], dtype=np.float32)
 
     def generate_batch(self, texts: list[str]) -> list[np.ndarray]:
-        """Generate embeddings for multiple texts in one API call."""
+        """Generate embeddings for multiple texts in one pass."""
         if not texts:
             return []
-
-        response = self.client.embeddings.create(
-            model=self._settings.embedding_model,
-            input=texts,
-            dimensions=self._settings.embedding_dimensions,
-        )
-        return [
-            np.array(item.embedding, dtype=np.float32)
-            for item in sorted(response.data, key=lambda x: x.index)
-        ]
+        
+        embeddings = list(self.model.embed(texts))
+        return [np.array(emb, dtype=np.float32) for emb in embeddings]
 
     @staticmethod
     def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
@@ -58,6 +49,8 @@ class EmbeddingService:
         return embedding.tobytes()
 
     @staticmethod
-    def from_bytes(data: bytes, dimensions: int = 1536) -> np.ndarray:
+    def from_bytes(data: bytes, dimensions: int = 384) -> np.ndarray:
         """Deserialize embedding from bytes."""
+        # Optional: infer dimensions from length: len(data) // 4
         return np.frombuffer(data, dtype=np.float32).copy()
+

@@ -23,25 +23,41 @@ def get_engine() -> NexusMemo:
     return _engine
 
 
+from nexusmemo.schemas import Entity, Relation, Decision
+
 @mcp.tool()
-def add_memory(text: str) -> str:
+def add_memory(
+    text: str,
+    summary: str,
+    entities: list[Entity],
+    relations: list[Relation],
+    decisions: list[Decision]
+) -> str:
     """Store a new memory. Use this to remember project decisions, architecture choices,
     migration history, bug fixes, deployment notes, or any important project context.
 
-    Args:
-        text: The information to remember. Be descriptive and include context.
+    As the AI assistant, you must extract ALL entities, relations, and decisions from the text and pass them to this tool.
 
-    Returns:
-        Summary of what was extracted and stored.
+    Args:
+        text: The raw information or context to remember.
+        summary: A one-line summary of the text.
+        entities: List of all meaningful tools, technologies, concepts, and people mentioned.
+        relations: How the entities relate to each other (e.g. USES, REPLACED_BY, DEPENDS_ON).
+        decisions: Any choices or architectural decisions made in the text.
     """
     engine = get_engine()
-    result = engine.add_memory(text)
+    result = engine.add_memory(
+        text=text, 
+        summary=summary, 
+        entities=entities, 
+        relations=relations, 
+        decisions=decisions
+    )
     return (
         f"Memory stored (id: {result.memory_id}). "
-        f"Extracted {result.entities_found} entities, "
+        f"Saved {result.entities_found} entities, "
         f"{result.relations_found} relations, "
-        f"{result.decisions_found} decisions. "
-        f"Summary: {result.summary}"
+        f"{result.decisions_found} decisions."
     )
 
 

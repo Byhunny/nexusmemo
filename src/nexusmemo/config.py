@@ -13,16 +13,10 @@ class Settings(BaseSettings):
     # --- Data ---
     data_dir: Path = Field(default_factory=lambda: Path.home() / ".nexusmemo")
 
-    # --- LLM ---
-    openai_api_key: str = ""
-    anthropic_api_key: str = ""
-    llm_provider: str = "openai"
-    extraction_model: str = "gpt-4o-mini"
-
     # --- Embeddings ---
-    embedding_provider: str = "openai"
-    embedding_model: str = "text-embedding-3-small"
-    embedding_dimensions: int = 1536
+    embedding_provider: str = "fastembed"
+    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    embedding_dimensions: int = 384
 
     # --- Retrieval ---
     max_results: int = 10
