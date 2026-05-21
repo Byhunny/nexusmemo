@@ -221,41 +221,30 @@ def memory_status() -> str:
 
 
 @mcp.tool()
-def initialize_memory_guidelines() -> str:
-    """Initialize NexusMemo in the current project by creating or updating CLAUDE.md.
-    Call this tool when the user asks to actively use NexusMemo or initialize memory for the project.
+def initialize_memory_guidelines(
+    target: str = "claude",
+) -> str:
+    """Initialize NexusMemo guidelines in the current project for the specified AI tool.
+
+    Writes the appropriate configuration file so the AI assistant knows to use
+    NexusMemo MCP tools for persistent memory.
+
+    Args:
+        target: Which AI tool to configure. Options:
+            - "claude"   → CLAUDE.md               (Claude Code)
+            - "cursor"   → .cursor/rules/nexusmemo.mdc  (Cursor)
+            - "windsurf" → .windsurfrules          (Windsurf)
+            - "copilot"  → .github/copilot-instructions.md (GitHub Copilot)
+            - "agents"   → AGENTS.md               (Antigravity, Codex, other agents)
+            - "all"      → writes all of the above
 
     Returns:
-        Status message about CLAUDE.md creation.
+        Status messages for each file written.
     """
-    import os
-    
-    CLAUDE_MD_TEMPLATE = """
-# NexusMemo (Persistent Memory) Usage Guidelines
+    from nexusmemo.guidelines import write_guidelines
 
-As an AI assistant in this project, you are expected to actively and proactively use the `nexusmemo` MCP plugin to maintain long-term context.
-
-1. **Recall Context Before Acting:** Before starting a complex task, making architectural changes, or fixing a deep bug, use the `search_memory` or `get_project_context` tools to retrieve historical decisions, known issues, and architectural rules.
-2. **Proactively Save Important Decisions:** Whenever we make an architectural decision, add a new library, resolve a critical bug, or define a new business rule, immediately use the `add_memory` tool to save this information to the persistent memory without asking for my permission.
-3. **Maintain a Rich Knowledge Graph:** When adding memories, write clear and descriptive sentences so the underlying system can successfully extract specific Entities and Relations to build a highly connected knowledge graph.
-"""
-    
-    claude_md_path = os.path.join(os.getcwd(), "CLAUDE.md")
-    
-    if os.path.exists(claude_md_path):
-        with open(claude_md_path, "r") as f:
-            content = f.read()
-            
-        if "NexusMemo" in content:
-            return "NexusMemo guidelines already exist in CLAUDE.md."
-            
-        with open(claude_md_path, "a") as f:
-            f.write("\n" + CLAUDE_MD_TEMPLATE)
-        return "Appended NexusMemo guidelines to existing CLAUDE.md. Memory is now active for this project!"
-    else:
-        with open(claude_md_path, "w") as f:
-            f.write(CLAUDE_MD_TEMPLATE.strip() + "\n")
-        return "Created CLAUDE.md with NexusMemo guidelines. Memory is now active for this project!"
+    results = write_guidelines(target=target)
+    return "\n".join(results)
 
 
 def run_server():

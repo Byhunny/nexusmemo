@@ -57,6 +57,32 @@ nexusmemo status
 nexusmemo entity "Dagster"
 ```
 
+### Initialize Project Guidelines
+
+Tell your AI assistant to use NexusMemo by writing a guidelines file into your project.
+Each tool reads from a different config file — `init` handles all of them.
+
+```bash
+# Claude Code → CLAUDE.md
+nexusmemo init
+nexusmemo init --target claude
+
+# Cursor → .cursor/rules/nexusmemo.mdc
+nexusmemo init --target cursor
+
+# Windsurf → .windsurfrules
+nexusmemo init --target windsurf
+
+# GitHub Copilot → .github/copilot-instructions.md
+nexusmemo init --target copilot
+
+# Antigravity, Codex, and other agents → AGENTS.md
+nexusmemo init --target agents
+
+# Write all config files at once
+nexusmemo init --target all
+```
+
 ### Use via API
 
 ```bash
@@ -98,6 +124,26 @@ Available MCP tools:
 - `find_related` — Explore knowledge graph relationships
 - `get_decisions` — Review past decisions
 - `memory_status` — Check system stats
+- `initialize_memory_guidelines` — Write guidelines file for your AI tool
+
+### Supported AI Tools
+
+NexusMemo works as an MCP server with any compatible AI coding assistant.
+Use `initialize_memory_guidelines` (or `nexusmemo init`) to configure each tool:
+
+| AI Tool | Config File | Target |
+|---------|-------------|--------|
+| Claude Code | `CLAUDE.md` | `claude` |
+| Cursor | `.cursor/rules/nexusmemo.mdc` | `cursor` |
+| Windsurf | `.windsurfrules` | `windsurf` |
+| GitHub Copilot | `.github/copilot-instructions.md` | `copilot` |
+| Antigravity / Codex / others | `AGENTS.md` | `agents` |
+
+```bash
+# Via MCP tool (e.g. tell your AI: "initialize nexusmemo for cursor")
+initialize_memory_guidelines(target="cursor")
+initialize_memory_guidelines(target="all")   # write all at once
+```
 
 ## Architecture
 
@@ -119,7 +165,7 @@ Available MCP tools:
 - **SQLite** for persistent storage
 - **NetworkX** for in-memory knowledge graph
 - **FastEmbed (ONNX)** for local semantic search (Zero API Keys)
-- **MCP SDK** for native Claude Code integration
+- **MCP SDK** for native integration with Claude Code, Cursor, Windsurf, Copilot, and other AI tools
 
 ## Database
 

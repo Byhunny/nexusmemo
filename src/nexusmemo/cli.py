@@ -132,39 +132,39 @@ def entity(name: str):
         click.echo(f"  {arrow} {rel['relation']} {rel['entity']}")
 
 
-CLAUDE_MD_TEMPLATE = """
-# NexusMemo (Persistent Memory) Usage Guidelines
-
-As an AI assistant in this project, you are expected to actively and proactively use the `nexusmemo` MCP plugin to maintain long-term context.
-
-1. **Recall Context Before Acting:** Before starting a complex task, making architectural changes, or fixing a deep bug, use the `search_memory` or `get_project_context` tools to retrieve historical decisions, known issues, and architectural rules.
-2. **Proactively Save Important Decisions:** Whenever we make an architectural decision, add a new library, resolve a critical bug, or define a new business rule, immediately use the `add_memory` tool to save this information to the persistent memory without asking for my permission.
-3. **Maintain a Rich Knowledge Graph:** When adding memories, write clear and descriptive sentences so the underlying system can successfully extract specific Entities and Relations to build a highly connected knowledge graph.
-"""
-
 @cli.command()
-def init():
-    """Initialize NexusMemo in the current project (creates/updates CLAUDE.md)."""
-    import os
-    
-    claude_md_path = os.path.join(os.getcwd(), "CLAUDE.md")
-    
-    if os.path.exists(claude_md_path):
-        with open(claude_md_path, "r") as f:
-            content = f.read()
-            
-        if "NexusMemo" in content:
-            click.echo("✓ NexusMemo guidelines already exist in CLAUDE.md")
-            return
-            
-        with open(claude_md_path, "a") as f:
-            f.write("\n" + CLAUDE_MD_TEMPLATE)
-        click.echo("✓ Appended NexusMemo guidelines to existing CLAUDE.md")
-    else:
-        with open(claude_md_path, "w") as f:
-            f.write(CLAUDE_MD_TEMPLATE.strip() + "\n")
-        click.echo("✓ Created CLAUDE.md with NexusMemo guidelines")
+@click.option(
+    "--target",
+    "-t",
+    default="claude",
+    show_default=True,
+    help=(
+        "AI tool to configure. Options: claude, cursor, windsurf, copilot, agents, all. "
+        "Use 'all' to write guidelines for every supported tool at once."
+    ),
+)
+def init(target: str):
+    """Initialize NexusMemo guidelines in the current project.
+
+    Writes the appropriate config file(s) so the AI assistant knows to use
+    NexusMemo MCP tools for persistent memory.
+
+    \b
+    Targets and their files:
+      claude   → CLAUDE.md
+      cursor   → .cursor/rules/nexusmemo.mdc
+      windsurf → .windsurfrules
+      copilot  → .github/copilot-instructions.md
+      agents   → AGENTS.md   (Antigravity, Codex, other agents)
+      all      → all of the above
+    """
+    from nexusmemo.guidelines import write_guidelines
+
+    results = write_guidelines(target=target)
+    for line in results:
+        click.echo(line)
 
 
 if __name__ == "__main__":
     cli()
+
