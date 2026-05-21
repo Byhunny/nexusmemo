@@ -125,5 +125,39 @@ def entity(name: str):
         click.echo(f"  {arrow} {rel['relation']} {rel['entity']}")
 
 
+CLAUDE_MD_TEMPLATE = """
+# NexusMemo (Persistent Memory) Usage Guidelines
+
+As an AI assistant in this project, you are expected to actively and proactively use the `nexusmemo` MCP plugin to maintain long-term context.
+
+1. **Recall Context Before Acting:** Before starting a complex task, making architectural changes, or fixing a deep bug, use the `search_memory` or `get_project_context` tools to retrieve historical decisions, known issues, and architectural rules.
+2. **Proactively Save Important Decisions:** Whenever we make an architectural decision, add a new library, resolve a critical bug, or define a new business rule, immediately use the `add_memory` tool to save this information to the persistent memory without asking for my permission.
+3. **Maintain a Rich Knowledge Graph:** When adding memories, write clear and descriptive sentences so the underlying system can successfully extract specific Entities and Relations to build a highly connected knowledge graph.
+"""
+
+@cli.command()
+def init():
+    """Initialize NexusMemo in the current project (creates/updates CLAUDE.md)."""
+    import os
+    
+    claude_md_path = os.path.join(os.getcwd(), "CLAUDE.md")
+    
+    if os.path.exists(claude_md_path):
+        with open(claude_md_path, "r") as f:
+            content = f.read()
+            
+        if "NexusMemo" in content:
+            click.echo("✓ NexusMemo guidelines already exist in CLAUDE.md")
+            return
+            
+        with open(claude_md_path, "a") as f:
+            f.write("\n" + CLAUDE_MD_TEMPLATE)
+        click.echo("✓ Appended NexusMemo guidelines to existing CLAUDE.md")
+    else:
+        with open(claude_md_path, "w") as f:
+            f.write(CLAUDE_MD_TEMPLATE.strip() + "\n")
+        click.echo("✓ Created CLAUDE.md with NexusMemo guidelines")
+
+
 if __name__ == "__main__":
     cli()
