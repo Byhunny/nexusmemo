@@ -39,6 +39,8 @@ class ImportanceService:
         # Recency: exponential decay based on age in days
         now = datetime.now(timezone.utc)
         if created_at:
+            if created_at.tzinfo is None:
+                created_at = created_at.replace(tzinfo=timezone.utc)
             age_days = (now - created_at).total_seconds() / 86400
         else:
             age_days = 0
