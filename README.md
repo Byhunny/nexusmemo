@@ -76,12 +76,19 @@ curl -X POST http://localhost:8765/memory/query \
 
 ### Use with Claude Code (MCP)
 
-```bash
-# Add as MCP server
-claude mcp add nexusmemo -- nexusmemo mcp
+The easiest way to run the MCP server is via `uvx` directly from PyPI.
 
-# Or if installed via pip in a specific path:
-claude mcp add nexusmemo -- /path/to/venv/bin/nexusmemo mcp
+```bash
+# Add as MCP server (will automatically download and run the latest version)
+claude mcp add nexusmemo -- uvx nexusmemo@latest mcp
+```
+
+**Troubleshooting Path Issues:**
+If Claude Code fails to find `uvx` (due to PATH environment issues), provide the absolute path to your `uvx` executable. You can find it by running `which uvx` in your terminal.
+
+```bash
+# Example with absolute path (replace with your actual path)
+claude mcp add nexusmemo -- ~/.local/bin/uvx nexusmemo@latest mcp
 ```
 
 Available MCP tools:
