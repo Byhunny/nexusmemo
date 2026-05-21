@@ -3,6 +3,7 @@
 import logging
 
 from mcp.server.fastmcp import FastMCP
+from pydantic import Field
 
 from nexusmemo.core import NexusMemo
 
@@ -29,9 +30,9 @@ from nexusmemo.schemas import Entity, Relation, Decision
 def add_memory(
     text: str,
     summary: str,
-    entities: list[Entity],
-    relations: list[Relation],
-    decisions: list[Decision]
+    entities: list[Entity] | None = Field(default=None, description="[REQUIRED] List of all meaningful tools, technologies, concepts, and people mentioned. You MUST provide this array. If none exist, send []. DO NOT OMIT THIS KEY."),
+    relations: list[Relation] | None = Field(default=None, description="[REQUIRED] How the entities relate to each other. You MUST provide this array. If none exist, send []. DO NOT OMIT THIS KEY."),
+    decisions: list[Decision] | None = Field(default=None, description="[REQUIRED] Any choices or architectural decisions made in the text. You MUST provide this array. If none exist, send []. DO NOT OMIT THIS KEY.")
 ) -> str:
     """Store a new memory. Use this to remember project decisions, architecture choices,
     migration history, bug fixes, deployment notes, or any important project context.
